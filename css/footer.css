@@ -1,0 +1,73 @@
+/* ===== 1) footer 外层彻底透明，让背景渐变透出来 ===== */
+#footer {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* 有些版本 footer 会带伪元素背景，顺手干掉 */
+#footer::before,
+#footer::after {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ===== 2) 把 .footer-other 变成“Dock 胶囊毛玻璃” ===== */
+#footer .footer-other {
+  width: min(980px, calc(100% - 56px)) !important;
+  margin: 22px auto 28px auto !important;
+  padding: 16px 22px !important;
+
+  border-radius: 22px !important;
+
+  /* 半透明底色 + blur 才会有毛玻璃 */
+  background: rgba(255, 255, 255, 0.55) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.35) inset !important;
+
+  text-align: center !important;
+}
+
+/* ===== 3) 文字颜色（醒目但不刺眼） ===== */
+#footer .footer-other,
+#footer .footer-other * {
+  color: rgba(20, 28, 40, 0.82) !important;
+}
+
+#footer .footer-other a {
+  color: rgba(15, 90, 170, 0.92) !important;
+  text-decoration: none !important;
+}
+
+#footer .footer-other a:hover {
+  color: rgba(15, 90, 170, 1) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+/* ===== 4) 两行之间稍微拉开点，像 dock 一样干净 ===== */
+#footer .footer-copyright {
+  margin-bottom: 6px !important;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+#footer .footer_custom_text {
+  opacity: 0.85;
+  font-size: 0.95em;
+}
+
+/* ===== 5) 移动端适配 ===== */
+@media (max-width: 768px) {
+  #footer .footer-other {
+    width: calc(100% - 24px) !important;
+    border-radius: 18px !important;
+    padding: 14px 16px !important;
+  }
+}

@@ -1,0 +1,40 @@
+/* 1) 兜底：整个页面背景 */
+html, body {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(
+    90deg,
+    rgba(247, 149, 51, 0.10) 0%,
+    rgba(243, 112, 85, 0.10) 15%,
+    rgba(239, 78, 123, 0.10) 30%,
+    rgba(161, 102, 171, 0.10) 44%,
+    rgba(80, 115, 184, 0.10) 58%,
+    rgba(16, 152, 173, 0.10) 72%,
+    rgba(7, 179, 155, 0.10) 86%,
+    rgba(109, 186, 130, 0.10) 100%
+  ) !important;
+  background-attachment: fixed;
+}
+
+/* 2) 如果 Butterfly 有 #web_bg，就把它也强制铺满 */
+#web_bg {
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -999 !important;
+
+  background: linear-gradient(
+    90deg,
+    rgba(247, 149, 51, 0.10) 0%,
+    rgba(243, 112, 85, 0.10) 15%,
+    rgba(239, 78, 123, 0.10) 30%,
+    rgba(161, 102, 171, 0.10) 44%,
+    rgba(80, 115, 184, 0.10) 58%,
+    rgba(16, 152, 173, 0.10) 72%,
+    rgba(7, 179, 155, 0.10) 86%,
+    rgba(109, 186, 130, 0.10) 100%
+  ) !important;
+}

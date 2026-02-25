@@ -1,0 +1,314 @@
+<!DOCTYPE html><html lang="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>pkp项目后端开发引导 | Sammie's Blog</title><meta name="author" content="Sammie"><meta name="copyright" content="Sammie"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PKP下OPS、OJS、OMP入门教程(以OPS为例)上手PKP下的多个出版社系统例如OJS、OPS、OMP等后端系统之前请最好阅读一遍本文档，本文档默认读者已经具备部分基础的开发技能如面向对象编程、接口、继承等。并且在阅读本文档之前请先阅读一遍官方的在线文档（虽然官方的文档永远不咋更新也不够详细罢了：PKP 开发文档） 项目概览PKP下有多个出版商系统，这里主要指的是采用php编写的后端，而他们">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pkp项目后端开发引导">
+<meta property="og:url" content="https://blog.sammie.vip/2026/02/25/pkpGuide/index.html">
+<meta property="og:site_name" content="Sammie&#39;s Blog">
+<meta property="og:description" content="PKP下OPS、OJS、OMP入门教程(以OPS为例)上手PKP下的多个出版社系统例如OJS、OPS、OMP等后端系统之前请最好阅读一遍本文档，本文档默认读者已经具备部分基础的开发技能如面向对象编程、接口、继承等。并且在阅读本文档之前请先阅读一遍官方的在线文档（虽然官方的文档永远不咋更新也不够详细罢了：PKP 开发文档） 项目概览PKP下有多个出版商系统，这里主要指的是采用php编写的后端，而他们">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.sammie.vip/2026/02/25/pkpGuide/banner.png">
+<meta property="article:published_time" content="2026-02-25T02:30:47.000Z">
+<meta property="article:modified_time" content="2026-02-25T04:21:52.826Z">
+<meta property="article:author" content="Sammie">
+<meta property="article:tag" content="PKP">
+<meta property="article:tag" content="入门教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.sammie.vip/2026/02/25/pkpGuide/banner.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "pkp项目后端开发引导",
+  "url": "https://blog.sammie.vip/2026/02/25/pkpGuide/",
+  "image": "https://blog.sammie.vip/2026/02/25/pkpGuide/banner.png",
+  "datePublished": "2026-02-25T02:30:47.000Z",
+  "dateModified": "2026-02-25T04:21:52.826Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Sammie",
+      "url": "https://blog.sammie.vip"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/logo.jpg"><link rel="canonical" href="https://blog.sammie.vip/2026/02/25/pkpGuide/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pkp项目后端开发引导',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/footer.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/tags_index.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Sammie's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">pkp项目后端开发引导</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">pkp项目后端开发引导</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-02-25T02:30:47.000Z" title="发表于 2026-02-25 10:30:47">2026-02-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-02-25T04:21:52.826Z" title="更新于 2026-02-25 12:21:52">2026-02-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="PKP下OPS、OJS、OMP入门教程-以OPS为例"><a href="#PKP下OPS、OJS、OMP入门教程-以OPS为例" class="headerlink" title="PKP下OPS、OJS、OMP入门教程(以OPS为例)"></a>PKP下OPS、OJS、OMP入门教程(以OPS为例)</h2><p>上手PKP下的多个出版社系统例如OJS、OPS、OMP等后端系统之前请最好阅读一遍本文档，本文档默认读者已经具备部分基础的开发技能如面向对象编程、接口、继承等。并且在阅读本文档之前请先阅读一遍官方的在线文档（虽然官方的文档永远不咋更新也不够详细罢了：<a target="_blank" rel="noopener" href="https://docs.pkp.sfu.ca/dev/documentation/en/">PKP 开发文档</a>）</p>
+<h2 id="项目概览"><a href="#项目概览" class="headerlink" title="项目概览"></a>项目概览</h2><p>PKP下有多个出版商系统，这里主要指的是采用php编写的后端，而他们的前端均在ui-library项目中，三个后端也还依赖于lib&#x2F;pkp这个子模块，因此在每个项目的主路径下均存在lib目录，这个目录下存在两个字模块目录（需要安装），分别是pkp和ui-library，也就是说三个系统的后端都存在lib&#x2F;pkp和lib&#x2F;ui-library，这三个系统的大部分功能都被抽象出来在这两个字模块里了，其中lib&#x2F;pkp是php的<strong>抽象公共业务后端</strong>，三个系统都存在提交文件、用户管理、审核等操作所以进行了复用，而lib&#x2F;ui-library则是采用了vue编写的纯前端，<strong>但这里要特别说明的是：</strong></p>
+<blockquote>
+<p>采用Vue不代表前后端分离，在pkp中使用vue只是为了减少代码复用，在pkp的架构下vue是用来编写组件的，真正的页面是由后端代码中的模版引擎调用vue组件然后再进行条件渲染后返回给前端的</p>
+</blockquote>
+<p>参与开发PKP的同学应该大多都有一些后端基础，特别是学习Java的人数众多，所以以下是以OPS为例对比Java那边技术栈的表格，PKP开发的后端是和大多数Java Web项目类似采用了<strong>单体MVC架构</strong>（而不是DDD或者微服务架构）：</p>
+<h3 id="技术栈对照表"><a href="#技术栈对照表" class="headerlink" title="技术栈对照表"></a>技术栈对照表</h3><table>
+<thead>
+<tr>
+<th align="left">技术领域</th>
+<th align="left">OKW-OPS (PHP)</th>
+<th align="left">Java (Spring Boot) 对照</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>语言</strong></td>
+<td align="left">PHP 8.2+</td>
+<td align="left">Java 17+</td>
+<td align="left">弱类型，但核心库大量使用了强类型声明。</td>
+</tr>
+<tr>
+<td align="left"><strong>入口</strong></td>
+<td align="left"><code>index.php</code></td>
+<td align="left"><code>main()</code> 方法</td>
+<td align="left">所有请求（Web&#x2F;API）都通过此文件进入。</td>
+</tr>
+<tr>
+<td align="left"><strong>依赖注入</strong></td>
+<td align="left"><code>Illuminate\Container</code></td>
+<td align="left">Spring IoC Container</td>
+<td align="left">使用了 Laravel 的容器组件。</td>
+</tr>
+<tr>
+<td align="left"><strong>路由</strong></td>
+<td align="left"><code>Dispatcher</code> &#x2F; <code>Slim</code> (API)</td>
+<td align="left"><code>@RequestMapping</code></td>
+<td align="left">自研的 Dispatcher 用于页面，Slim 框架用于 API。</td>
+</tr>
+<tr>
+<td align="left"><strong>ORM&#x2F;DAO</strong></td>
+<td align="left"><code>DAO</code> &#x2F; <code>Repository</code></td>
+<td align="left">JPA &#x2F; Hibernate &#x2F; MyBatis</td>
+<td align="left">PKP中混合使用了传统的 DAO 模式和现代的 Repository 模式，猜测是因为原来老代码的功能进行了保留没有重构为Repository的Collector（构建器模式）</td>
+</tr>
+<tr>
+<td align="left"><strong>模板引擎</strong></td>
+<td align="left">Smarty (<code>.tpl</code>)</td>
+<td align="left">Thymeleaf &#x2F; JSP</td>
+<td align="left">服务端渲染 HTML。</td>
+</tr>
+<tr>
+<td align="left"><strong>前端框架</strong></td>
+<td align="left">Vue.js + jQuery</td>
+<td align="left">React &#x2F; Angular</td>
+<td align="left">新功能使用 Vue，旧功能保留 jQuery。</td>
+</tr>
+<tr>
+<td align="left"><strong>构建工具</strong></td>
+<td align="left">Composer + NPM</td>
+<td align="left">Maven &#x2F; Gradle</td>
+<td align="left">Composer 管理 PHP 依赖，NPM 管理前端依赖。</td>
+</tr>
+</tbody></table>
+<h2 id="开始开发和安装OPS"><a href="#开始开发和安装OPS" class="headerlink" title="开始开发和安装OPS"></a>开始开发和安装OPS</h2><p>以下命令均在mac上进行的安装，如果你是windows平台请先安装WSL的ubuntu 20以及以上版本然后再切换到WSL中进行安装和开发（注意ubuntu中没有brew，这是mac的包管理工具），<strong>而且安装的过程中必须开启梯子否则例如npm时候的某些包会掉</strong>，另外其他出版商系统例如OJS和OMP也是完全类似的操作，只需要注意替换下方命令的地址即可，理论上你看到我这篇文章的时候我们已经建立好了OKW-OPS或者OKW-OMP了，所以直接从BCPress组织的仓库里克隆即可，不需要从pkp官方的ops或者omp仓库克隆代码，注意要先加入我们的BCPress组织否则没有权限。</p>
+<blockquote>
+<p>（仓库管理者要注意分支，例如OPS不要使用老版本例如3.5.0-1而要用尽量新一些的例如3.5.0-3，因为安装依赖的时候pkp官方会用到一些在线的东西例如全球所有学术机构名单，这个名单是在线的而返回的json数据格式一变就会导致安装失败例如3.5.0-1就有这个问题所以我升级到了3.5.0-3)，</p>
+</blockquote>
+<blockquote>
+<p>正常情况下从我们的项目中开发是不需要修改config.inc.php，但如果你想自己修改请注意里面的一下几个内容：base_url是你启动后的访问路径一般在本地开发环境用127.0.0.1:8000，installed &#x3D; On 表示已经安装过了，改成Off启动项目会去数据库中创建表等操作，[database]下面的host username等是配置数据库的相关内容，files_dir是用来存放上传文件的路径</p>
+</blockquote>
+<ol>
+<li><p>先去github上从dev分支创建出属于你自己的分支 假设我这里叫szy分支</p>
+</li>
+<li><p>从仓库克隆后端代码，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:BenchCouncil-Press/OKW-OPS.git</span><br><span class="line"><span class="built_in">cd</span> OKW-OPS</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>切换到自己的分支去做开发</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout szy</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>安装lib&#x2F;pkp和lib&#x2F;ui-library依赖</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git submodule <span class="built_in">sync</span> --recursive</span><br><span class="line">git submodule update --init --recursive</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>安装node和php以及composer(提前安装过可以跳过，注意下面的命令不要在项目主目录执行而是应该到你的~目录下执行或者你直接用命令<code>cd ~</code>，如果是mac直接打开你的终端执行即可)</li>
+</ol>
+<p>OPS3.5.0-3依赖的是node 20及以上的版本，后端的php依赖的是php8.2及以上的版本</p>
+<p>假如你没有brew的话：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果有了brew就直接安装PHP8.2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install php@8.2</span><br></pre></td></tr></table></figure>
+
+<p>(可选)把PHP8.2切换为默认PHP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew <span class="built_in">link</span> --overwrite --force php@8.2</span><br></pre></td></tr></table></figure>
+
+<p>验证版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -v</span><br></pre></td></tr></table></figure>
+
+<p>理论上会显示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PHP 8.2.x</span><br></pre></td></tr></table></figure>
+
+<p>安装Composer</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install composer</span><br></pre></td></tr></table></figure>
+
+<p>验证:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer -V</span><br></pre></td></tr></table></figure>
+
+<p>安装Node（这里强烈推荐使用nvm，因为开发环境可能有多个node版本需要用nvm来进行管理）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install nvm</span><br></pre></td></tr></table></figure>
+
+<p>添加到 ~&#x2F;.zshrc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NVM_DIR=<span class="string">&quot;<span class="variable">$HOME</span>/.nvm&quot;</span></span><br><span class="line"><span class="built_in">source</span> $(brew --prefix nvm)/nvm.sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nvm install 20</span><br><span class="line">nvm use 20</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure>
+
+<p>理论上会输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v20.x.x</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>安装php、node依赖</li>
+</ol>
+<p>切换回项目主路径（假设我的项目在&#x2F;Users&#x2F;sammie&#x2F;phpproject&#x2F;OKW-OPS）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/phpproject/OKW-OPS</span><br></pre></td></tr></table></figure>
+
+<p>用composer安装php依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">composer --working-dir=lib/pkp install</span><br><span class="line">composer --working-dir=plugins/generic/citationStyleLanguage install</span><br></pre></td></tr></table></figure>
+
+<p>如果是OJS或者OMP的话需要用到支付要多这一步（OPS不需要安装这个）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer --working-dir=plugins/paymethod/paypal install</span><br></pre></td></tr></table></figure>
+
+<p>用node自带的npm安装依赖(假如这一步因为网络下载报错了直接删除项目主路径下的node_modules，重新执行命令即可)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+
+<p>修改config.inc.php中的文件上传路径，我这里用的是我的本地路径，因为pkp官方的默认上传行为就是上传到后端安装的服务器上，后续我们可能会改成上传到AWS上进行管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">files_dir = /Users/sammie/pkp-files/ops <span class="comment"># 这是我的路径，你的电脑上没有/Users/sammie 这是mac的默认用户路径 </span></span><br></pre></td></tr></table></figure>
+
+<p>然后直接启动项目(注意这里的127.0.0.1:8000是config.inc.php中的base_url)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -S 127.0.0.1:8000</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="项目架构图（以OPS为例）"><a href="#项目架构图（以OPS为例）" class="headerlink" title="项目架构图（以OPS为例）"></a>项目架构图（以OPS为例）</h2><p>进行实际功能开发前先看看这个图，这是我自己理解的整个PKP后端的架构图。</p>
+<p><img src="/2026/02/25/pkpGuide/1.svg"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://blog.sammie.vip">Sammie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://blog.sammie.vip/2026/02/25/pkpGuide/">https://blog.sammie.vip/2026/02/25/pkpGuide/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://blog.sammie.vip" target="_blank">Sammie's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PKP/">PKP</a><a class="post-meta__tags" href="/tags/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></div><div class="post-share"><div class="social-share" data-image="/2026/02/25/pkpGuide/banner.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2023/01/14/RLForMysql/" title="回炉重造之MySQL(基础)"><img class="cover" src="/2023/01/14/RLForMysql/banner.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">回炉重造之MySQL(基础)</div></div><div class="info-2"><div class="info-item-1">前言本章主要介绍回炉重造MySQL的基础部分内容，由于这一次想全面认真的学习，因此MySQL作为重点也是会学习下高级部分例如索引的失效以及InnoDB、慢查询日志分析、行锁、间隙锁等内容，在更新MySQL的学习记录当中会持续更新MyBatis的内容，先简单过一遍MySQL，然后还要学习别的框架内容，特别是微服务的部分，因此高级部分会在学习完Java框架以后再补 SQL分类DDL：数据定义语言 CREATE、ALTER、DROP、RENAME、TRUNCATE等 DML：数据操作语言 SELECT、DELETE、UPDATE、INSERT等 DCL：数据控制语言 COMMIT、ROLLBACK、SAVEPOINT、GRANT、REVOKE等 基本SELECT语句查询内容较多，分几个章节学习。 基本SELECT语句123# 基本语法 SELECT 字段1，字段2,... FROM 表名 WHERE 查询条件# 查询表中所有字段SELECT * FROM table_name;  列的别名查询的时候字段部分可以在字段后面添加空格或者使用AS的方式改成别名 123SELECT id,na...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Sammie</div><div class="author-info-description">Sammie的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/szysammie"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">人生的乐趣就在于折腾和体验，永远积极！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PKP%E4%B8%8BOPS%E3%80%81OJS%E3%80%81OMP%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B-%E4%BB%A5OPS%E4%B8%BA%E4%BE%8B"><span class="toc-number">1.</span> <span class="toc-text">PKP下OPS、OJS、OMP入门教程(以OPS为例)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%A7%88"><span class="toc-number">2.</span> <span class="toc-text">项目概览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%88%E5%AF%B9%E7%85%A7%E8%A1%A8"><span class="toc-number">2.1.</span> <span class="toc-text">技术栈对照表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E5%92%8C%E5%AE%89%E8%A3%85OPS"><span class="toc-number">3.</span> <span class="toc-text">开始开发和安装OPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84%E5%9B%BE%EF%BC%88%E4%BB%A5OPS%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">项目架构图（以OPS为例）</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/02/25/pkpGuide/" title="pkp项目后端开发引导"><img src="/2026/02/25/pkpGuide/banner.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pkp项目后端开发引导"/></a><div class="content"><a class="title" href="/2026/02/25/pkpGuide/" title="pkp项目后端开发引导">pkp项目后端开发引导</a><time datetime="2026-02-25T02:30:47.000Z" title="发表于 2026-02-25 10:30:47">2026-02-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/14/RLForMysql/" title="回炉重造之MySQL(基础)"><img src="/2023/01/14/RLForMysql/banner.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="回炉重造之MySQL(基础)"/></a><div class="content"><a class="title" href="/2023/01/14/RLForMysql/" title="回炉重造之MySQL(基础)">回炉重造之MySQL(基础)</a><time datetime="2023-01-14T06:05:22.000Z" title="发表于 2023-01-14 14:05:22">2023-01-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/28/JavaRLSpring2/" title="回炉重造之Spring(二)"><img src="/2022/12/28/JavaRLSpring2/banner.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="回炉重造之Spring(二)"/></a><div class="content"><a class="title" href="/2022/12/28/JavaRLSpring2/" title="回炉重造之Spring(二)">回炉重造之Spring(二)</a><time datetime="2022-12-28T07:43:44.000Z" title="发表于 2022-12-28 15:43:44">2022-12-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/24/butter-fly/" title="使用Hexo+ButterFly主题构建自己的博客"><img src="/2022/12/24/butter-fly/banner.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Hexo+ButterFly主题构建自己的博客"/></a><div class="content"><a class="title" href="/2022/12/24/butter-fly/" title="使用Hexo+ButterFly主题构建自己的博客">使用Hexo+ButterFly主题构建自己的博客</a><time datetime="2022-12-24T02:03:28.000Z" title="发表于 2022-12-24 10:03:28">2022-12-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/22/UseNginxToVIP/" title="使用Nginx转发视频VIP解析并去广告"><img src="/2022/12/22/UseNginxToVIP/banner.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Nginx转发视频VIP解析并去广告"/></a><div class="content"><a class="title" href="/2022/12/22/UseNginxToVIP/" title="使用Nginx转发视频VIP解析并去广告">使用Nginx转发视频VIP解析并去广告</a><time datetime="2022-12-22T13:30:56.000Z" title="发表于 2022-12-22 21:30:56">2022-12-22</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">我曾踏足山巅，也曾跌入谷底，二者都使我受益良多。</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.4/source/js/utils.min.js"></script><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.4/source/js/main.min.js"></script><div class="js-pjax"></div><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索..." type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/hexo-theme-butterfly@5.5.4/source/js/search/local-search.min.js"></script></div></div></body></html>
